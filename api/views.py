@@ -1,19 +1,64 @@
 from .models import Song
 from .serializers import SongSerializer
-
 from rest_framework.views import APIView
-from rest_framework import status
 from rest_framework.response import Response
-
 from rest_framework.pagination import PageNumberPagination
+from rest_framework import status
+from rest_framework.authtoken.models import Token
+from django.contrib.auth import authenticate
 
+from django.contrib.auth.models import User
+from rest_framework.permissions import IsAuthenticated, IsAuthenticatedOrReadOnly, IsAdminUser
+from django.http import HttpResponseRedirect
+from django.urls import reverse
+
+class RegisterView(APIView):
+    http_method_names = ['post']
+    
+    def post(self, request):
+        username = request.data.get('username')
+        password = request.data.get('password')
+        
+        try:
+            user = User.objects.create_user(username=username, password=password)
+            return Response({"message": "Usuario creado exitosamente"}, status=status.HTTP_201_CREATED)
+        except Exception as e:
+            return Response({"error": str(e)}, status=status.HTTP_400_BAD_REQUEST)
+
+class LoginView(APIView):
+    http_method_names = ['post']
+    
+    def post(self, request):
+        
+        username = request.data.get('username')
+        password = request.data.get('password')
+        user = authenticate(username=username, password=password)
+        
+        if user is not None:
+            
+            token, created = Token.objects.get_or_create(user=user)
+            return Response({'token' : token.key}, status=status.HTTP_200_OK)
+        
+        return Response({'error': 'Credenciales no válidas'}, status=status.HTTP_400_BAD_REQUEST)
+        
+class LogoutView(APIView):
+    
+    permission_classes = [IsAuthenticated]
+    http_method_names = ['post']
+    
+    def post(self, request):
+        request.user.auth_token.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+        
 class CustomPageNumberPagination(PageNumberPagination):
     page_size = 2
     page_size_query_param = 'page_size'
     max_page_size = 100
     
+
 class SongView(APIView):
     http_method_names = ['get', 'post']
+    permission_classes = [IsAuthenticated]
     pagination_class = CustomPageNumberPagination
     
     def get(self, request):

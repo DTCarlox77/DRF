@@ -41,7 +41,8 @@ DJANGO_APPS = [
 
 # Aplicaciones de terceros.
 THIRD_APPS = [
-    'rest_framework'
+    'rest_framework',
+    'rest_framework.authtoken'
 ]
 
 # Aplicaciones locales.
@@ -52,7 +53,12 @@ LOCAL_APPS = [
 # Aplicaciones instaladas en el proyecto.
 INSTALLED_APPS = DJANGO_APPS + THIRD_APPS + LOCAL_APPS
 
-
+# Bloqueo de vistas al estar sin Token.
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES' : [
+        'rest_framework.authentication.TokenAuthentication',
+    ],
+}
 
 
 MIDDLEWARE = [
