@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Hola desde Django</h1>
+
+    <button id="boton">Enviar notificación</button>
+
+    <script>
+
+        const websocket_url = 'http://localhost:8000/ws/notificaciones/5';
+
+        const boton = document.querySelector('#boton');
+
+        const socket = new WebSocket(websocket_url);
+        console.log(socket);
+
+        socket.onopen = () => {
+            console.log('Conectado al websocket de notificaciones');
+
+            boton.addEventListener('click', () => {
+                socket.send(JSON.stringify({
+                    message : 'Hola a todos desde channels'
+                }));
+            });
+        }
+
+        socket.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            console.log(data);
+        }
+
+        socket.onclose = () => {
+            console.log('La conexión se ha cerrado');
+        }
+
+        socket.onerror = (error) => {
+            console.error('Ha ocurrido un error ' + error);
+        }
+
+    </script>
+</body>
+</html>
