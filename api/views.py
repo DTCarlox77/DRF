@@ -51,14 +51,13 @@ class LogoutView(APIView):
         return Response(status=status.HTTP_204_NO_CONTENT)
         
 class CustomPageNumberPagination(PageNumberPagination):
-    page_size = 2
+    page_size = 4
     page_size_query_param = 'page_size'
     max_page_size = 100
     
 
 class SongView(APIView):
     http_method_names = ['get', 'post']
-    permission_classes = [IsAuthenticated]
     pagination_class = CustomPageNumberPagination
     
     def get(self, request):
