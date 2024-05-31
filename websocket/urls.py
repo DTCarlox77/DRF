@@ -5,5 +5,5 @@ from .views import main
 
 urlpatterns = [
     path('', include(websocket_urlpatterns)),
-    path('sala/', main, name='main')
+    path('sala/<int:id>/', main, name='main')
 ]

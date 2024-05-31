@@ -6,17 +6,16 @@
     <title>Document</title>
 </head>
 <body>
-    <h1>Hola desde Django</h1>
+    
+    <h1>Hola mundo</h1>
 
     <button id="boton">Enviar notificación</button>
-
     <script>
 
         const id_sala = window.location.pathname;
-        const array = id_sala.split('/');
-        console.log(array);
+        console.log(id_sala);
 
-        const websocket_url = `http://localhost:8000/ws/notificaciones/${array[2]}`;
+        const websocket_url = 'http://localhost:8000/ws/notificaciones/5';
 
         const boton = document.querySelector('#boton');
 
@@ -35,7 +34,7 @@
 
         socket.onmessage = (e) => {
             const data = JSON.parse(e.data);
-            alert('Has recibido un mensaje.');
+            console.log(data);
         }
 
         socket.onclose = () => {
@@ -45,7 +44,6 @@
         socket.onerror = (error) => {
             console.error('Ha ocurrido un error ' + error);
         }
-
     </script>
 </body>
 </html>
